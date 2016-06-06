@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>HOME</title>
+  <link rel="stylesheet" type="text/css" href="lib/jquery-ui.min.css">
+  <link rel="stylesheet" type="text/css" href="lib/select2.min.css">
+  <link rel="stylesheet" type="text/css" href="lib/pqgrid.min.css">
+  <link rel="stylesheet" type="text/css" href="lib/app.css">
+  <link rel="stylesheet" type="text/css" href="lib/pqgrid.css">
+  <script type="text/javascript" src="lib/jquery-2.2.1.min.js"></script>
+  <script type="text/javascript" src="lib/jquery-ui.js"></script>
+  <script type="text/javascript" src="lib/select2.full.min.js"></script>
+  <script type="text/javascript" src="lib/pqgrid.min.js"></script>
+  <script type="text/javascript" src="lib/app.js"></script>
+</head>
+<body>
+
+<section class='container'>
+	  <div id="radio">
+		<div style="float:left">
+		<input type="radio" id="radio2" name="radio" ><label for="radio2">JavaScript </label></input>
+		<input type="radio" id="radio3" name="radio" ><label for="radio3">Arrow</label></input>
+	  </div>		 
+	  </div>
+	  <div id="home" style="float:right">
+		<input type="radio" id="radio1" name="radio" checked="checked"><label for="radio1">Adv. UI</label></input></div>
+			<!--<select class="js-data-example-ajax">
+			  <option value="3620194" selected="selected">select2/select2</option>
+			</select>-->
+			</br></br>
+			<div class="store">choose a store: 
+			<select class="js-store-data">
+				<option value="" selected="selected"></option>
+			</select> 
+			</div>
+			<!--<div class="item">
+			<select class="js-item-data">
+				<option value="--choose an item--" selected="selected"></option>
+			</select>
+			</div>
+			-->
+			<br/><br/> 
+			<div id='result'></div><br/>
+    <div id="grid_paging" style="margin:5px"></div>
+	<br/><br/><h3>Code</h3>
+		 <pre> 
+All 3rdParty all the time!
+   pqgrid
+   select2
+		</pre>
+</section>
+<section class='container special'>
+
+          <hgroup>
+            <h1>Resource Endpoints</h1>
+          </hgroup>
+
+
+        <div class="row">
+          <section class='col-xs-12 col-sm-6 col-md-6'>
+            <section>
+			<h2>store</h2>
+
+		<table>
+			<tr>
+				<th>URL</th>
+				<th>Method</th>
+				<th>Payload</th>
+				<th>Result</th>
+			</tr>
+			<tr>
+				<td>/api/store</td>
+				<td>GET</td>
+				<td></td>
+				<td>Get a list of all store</td>
+			</tr>
+			<tr>
+				<td>/api/store/{id}</td>
+				<td>GET</td>
+				<td></td>
+				<td>Details of a store</td>
+			</tr>
+			<tr>
+				<td>/api/store</td>
+				<td>POST</td>
+				<td>{store}</td>
+				<td>Create or update a store</td>
+			</tr>
+			<tr>
+				<td>/api/store/{id}</td>
+				<td>DELETE</td>
+				<td></td>
+				<td>Delete a store</td>
+			</tr>		
+		</table>
+		 
+		<h2>item</h2>
+					
+		<table>
+			<tr>
+				<th>URL</th>
+				<th>Method</th>
+				<th>Payload</th>
+				<th>Result</th>
+			</tr>
+			<tr>
+				<td>/api/item</td>
+				<td>GET</td>
+				<td></td>
+				<td>Get a list of all items</td>
+			</tr>
+			<tr>
+				<td>/api/item/{id}</td>
+				<td>GET</td>
+				<td></td>
+				<td>Details of an item</td>
+			</tr>
+			<tr>
+				<td>/api/item</td>
+				<td>POST</td>
+				<td>{item}</td>
+				<td>Create or update an item</td>
+			</tr>
+			<tr>
+				<td>/api/item/{id}</td>
+				<td>DELETE</td>
+				<td></td>
+				<td>Delete an item</td>
+			</tr>		
+		</table>
+        </section>
+
+        </section>
+        </div>
+
+        <footer>
+          <div class="logo"></div>
+        </footer>
+</section>
+</body>
+</html>

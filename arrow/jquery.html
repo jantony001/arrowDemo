@@ -1,0 +1,211 @@
+<html>
+  <head>
+    <script type="text/javascript" src="../lib/common.js"></script>
+  	<link rel="stylesheet" type="text/css" href="../lib/jquery-ui.min.css">
+
+    <script type="text/javascript" src="../lib/jquery-2.2.1.min.js"></script>
+	<script type="text/javascript" src="../lib/jquery-ui.js"></script>
+	<link rel="stylesheet" type="text/css" href="../lib/app.css">
+  <script>
+  	$(function () {
+  		$("#radio").buttonset();
+		$("#home").buttonset();
+  		$("#radio1").click(function () {
+  			location.href = '../index.html'
+  		});
+  		$("#radio2").click(function () {
+  			location.href = 'jquery.html'
+  		});
+  		$("#radio3").click(function () {
+  			location.href = 'arrow.html'
+
+  		});
+	});
+  </script>
+  </head>
+  <body>
+  <section class='container'>
+	  <div id="radio">
+		<div style="float:left">
+		<input type="radio" id="radio2" name="radio" checked="checked"><label for="radio2">JavaScript </label></input>
+		<input type="radio" id="radio3" name="radio" ><label for="radio3">Arrow</label></input>
+	  </div>		 
+	  </div>
+	  <div id="home" style="float:right"><input type="radio" id="radio1" name="radio" ><label for="radio1">Adv. UI</label></input></div>
+ <br/><br/>
+		<div id="autocomplete" style="float:left; width:50%">
+			Auto Complete: <input id = "input" class="ui-corner-all" style="height:50px;width:100%;font-size:24px;" type="text" value="">
+			</br></br></br>
+		</div>
+		<div style="height:120px;display: block;">
+		<div id="stats"  style="float:right; width:50%">
+			<ul id="selectable">
+			<li class="ui-widget-content">
+				<u><b>Page Stats</b></u></br>
+				Initial load time: 
+				<span id="init" style="font-weight: bold"></span>
+				</br>Data request count: 
+				<span id="count" style="font-weight: bold">0</span> 
+				</br>Latest request + render time: 
+				<span id="time" style="font-weight: bold"></span>
+				</br>Average request + render time: 
+				<span id="average" style="font-weight: bold"></span>
+				</li>
+			</ul>
+		</div>
+		</div>
+ 		<div id="results"><ol></ol></div>
+				<div id="resultGrid"></div>
+	<br/><br/><h3>Code</h3>
+		 <pre> 
+$('#input').on("keyup", function() {
+	var xhttp = new XMLHttpRequest(),
+		val = $('#input').val();
+
+	xhttp.onreadystatechange = function () {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			handlerFn();	
+		}
+	};
+	xhttp.open("GET", '../api/store?limit=10&q=' + val, true);
+	xhttp.send();
+}
+		</pre>
+	</section>
+	
+	<section class='container special'>
+
+			  <hgroup>
+				<h1>Resource Endpoints</h1>
+			  </hgroup>
+
+
+			<div class="row">
+			  <section class='col-xs-12 col-sm-6 col-md-6'>
+				<section>
+				<h2>store</h2>
+
+			<table>
+				<tr>
+					<th>URL</th>
+					<th>Method</th>
+					<th>Payload</th>
+					<th>Result</th>
+				</tr>
+				<tr>
+					<td>/api/store</td>
+					<td>GET</td>
+					<td></td>
+					<td>Get a list of all store</td>
+				</tr>
+				<tr>
+					<td>/api/store/{id}</td>
+					<td>GET</td>
+					<td></td>
+					<td>Details of a store</td>
+				</tr>
+				<tr>
+					<td>/api/store</td>
+					<td>POST</td>
+					<td>{store}</td>
+					<td>Create or update a store</td>
+				</tr>
+				<tr>
+					<td>/api/store/{id}</td>
+					<td>DELETE</td>
+					<td></td>
+					<td>Delete a store</td>
+				</tr>		
+			</table>
+			 
+			<h2>item</h2>
+						
+			<table>
+				<tr>
+					<th>URL</th>
+					<th>Method</th>
+					<th>Payload</th>
+					<th>Result</th>
+				</tr>
+				<tr>
+					<td>/api/item</td>
+					<td>GET</td>
+					<td></td>
+					<td>Get a list of all items</td>
+				</tr>
+				<tr>
+					<td>/api/item/{id}</td>
+					<td>GET</td>
+					<td></td>
+					<td>Details of an item</td>
+				</tr>
+				<tr>
+					<td>/api/item</td>
+					<td>POST</td>
+					<td>{item}</td>
+					<td>Create or update an item</td>
+				</tr>
+				<tr>
+					<td>/api/item/{id}</td>
+					<td>DELETE</td>
+					<td></td>
+					<td>Delete an item</td>
+				</tr>		
+			</table>
+			</section>
+
+			</section>
+			</div>
+
+			<footer>
+			  <div class="logo"></div>
+			</footer>
+	</section>
+<script>
+	$('#input').on("keyup", function() {
+		if(Globals.currTimer) {
+			window.clearTimeout(Globals.currTimer);
+			delete Globals.currTimer;
+		}
+		Globals.currTimer = window.setTimeout(sendStoreRequest, 400);
+	});
+	function updateTextBox(row) {
+		var rowText = row.textContent.split(' | ');
+		if(rowText.length > 1) {
+			$('#input').val(rowText[1]);
+		}
+	}
+	function sendStoreRequest() {
+		startCounter();
+		var xhttp = new XMLHttpRequest(),
+		val = $('#input').val(),
+		results;
+
+		//if(Globals.currXhr) {
+		//	Globals.currXhr.abort();
+		//	Globals.currXhr = xhttp;
+		//}
+		xhttp.onreadystatechange = function () {
+			if (xhttp.readyState == 4 && xhttp.status == 200) {
+				//delete Globals.currXhr;
+				results = JSON.parse(xhttp.responseText).items || [];
+				$('#results').html('<ol id="selectable"/>')
+				  results.forEach(function (result) {
+					var out = '';
+					for (var x in result) {
+						out += result[x] + " | ";
+					}
+					$('ol').append($('<li class="ui-widget-content result" onclick="showInventory(this.id, 1, 20);updateTextBox(this);" id ='+result.id +' name ='+result.name +'>').text(out));
+				  });			
+				updateRenderTime();
+			}
+		};
+		//xhttp.open("GET", '../api/store?limit=10&q=' + ((val && val.trim()) || '@NaN@'), true);
+		xhttp.open("GET", '../api/store?limit=10&q=' + val, true);
+		xhttp.send();
+		updateCounter();
+	}
+	$('#init').text((Date.now() - Globals.initTime) + ' ms');
+</script>
+  </body>
+</html>
