@@ -111,14 +111,14 @@ var SampleApp = function () {
 				res.send(self.cache_get('root.html'));
 			}
 		};
-	 
+
 		self.routes['/api'] = {
 			get : function (req, res) {
 				res.setHeader('Content-Type', 'text/html');
 				res.send(self.cache_get('root.html'));
 			}
 		};
-		
+
 		self.routes['/api/store/:id*?'] = {
 			get : function (req, res) {
 				var query = "select * from store",
@@ -147,7 +147,7 @@ var SampleApp = function () {
 				} else if (search) {
 					offset = page ? (page * limit) : 0;
 					like = " WHERE name like ?";
-					query += like + " limit "+ limit +" offset " + offset;
+					query += like + " limit " + limit + " offset " + offset;
 					connection.query("select count(*) as c from store " + like, ['%' + search + '%'], function (err, rows) {
 						if (!err) {
 							if (rows[0]) {
@@ -192,9 +192,9 @@ var SampleApp = function () {
 				search = req.query['q'],
 				store = req.query['store'],
 				page = req.query['page'] || req.query['pq_curpage'],
-				count = req.query['pq_rpp']  || 10,
+				count = req.query['pq_rpp'] || 10,
 				param = req.params.id,
-				offset = page ? ((page-1) * count) : 0,
+				offset = page ? ((page - 1) * count) : 0,
 				countQuery,
 				searchQuery,
 				count;
@@ -218,7 +218,6 @@ var SampleApp = function () {
 
 					searchQuery = "select * from item inner join store_item on id=item_id WHERE name like ? " + (store ? " and store_id = ? " : " group by item_id") + " limit " + count + " offset " + offset;
 
-
 					connection.query(countQuery, ['%' + search + '%', store], function (err, rows) {
 						if (!err) {
 							if (rows.length > 1) {
@@ -238,8 +237,8 @@ var SampleApp = function () {
 							res.json({
 								"items" : rows,
 								"page" : JSON.parse(page),
-								"prev" : JSON.parse(page)-1,
-								"next" : JSON.parse(page)+1,
+								"prev" : JSON.parse(page) - 1,
+								"next" : JSON.parse(page) + 1,
 								"size" : rows.length,
 								"count" : (count || rows.length),
 								"store" : JSON.parse(store)
@@ -270,8 +269,8 @@ var SampleApp = function () {
 							res.json({
 								"items" : rows,
 								"page" : JSON.parse(page),
-								"prev" : JSON.parse(page)-1,
-								"next" : JSON.parse(page)+1,
+								"prev" : JSON.parse(page) - 1,
+								"next" : JSON.parse(page) + 1,
 								"size" : rows.length,
 								"count" : (count || rows.length),
 								"store" : JSON.parse(store)
@@ -281,7 +280,6 @@ var SampleApp = function () {
 				}
 			}
 		};
-
 
 	};
 
@@ -384,5 +382,3 @@ new CronJob('20 * * * *', function () {
 var zapp = new SampleApp();
 zapp.initialize();
 zapp.start();
-
-
