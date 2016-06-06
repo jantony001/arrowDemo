@@ -41,12 +41,12 @@ var SampleApp = function () {
 	self.populateCache = function () {
 		if (typeof self.zcache === "undefined") {
 			self.zcache = {
-				'index.html' : ''
+				'root.html' : ''
 			};
 		}
 
 		//  Local cache for static content.
-		self.zcache['index.html'] = fs.readFileSync('./index.html');
+		self.zcache['root.html'] = fs.readFileSync('./root.html');
 	};
 
 	/**
@@ -105,17 +105,17 @@ var SampleApp = function () {
 				res.redirect("/arrow/arrow.html")
 			}
 		};
-		self.routes['/index.html'] = {
+		self.routes['/root.html'] = {
 			get : function (req, res) {
 				res.setHeader('Content-Type', 'text/html');
-				res.send(self.cache_get('index.html'));
+				res.send(self.cache_get('root.html'));
 			}
 		};
 	 
 		self.routes['/api'] = {
 			get : function (req, res) {
 				res.setHeader('Content-Type', 'text/html');
-				res.send(self.cache_get('index.html'));
+				res.send(self.cache_get('root.html'));
 			}
 		};
 		
