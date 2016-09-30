@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var mysql = require("mysql");
 var http = require('http');
 var CronJob = require('cron').CronJob;
-
+var arrow;
 /**
  *  Define the sample application.
  */
@@ -118,7 +118,30 @@ var SampleApp = function () {
 				res.send(self.cache_get('root.html'));
 			}
 		};
+		self.routes['/api/store2'] = {
+			get : function (req, res) {
+				var countFn = function () {
+					/* @arrow :: _ ~> Number */
+					var query = "select count(*) as c from store;";
+					//TODO figure out running this query and getting the count from callback
+					return 25;
+				}
+				var selectFn = function (count) {
+					/* @arrow :: Number ~> _ */
+					var query = "select * from store LIMIT 20;";
+					connection.query(query, [], function (err, rows) {
+						res.json({
+							"items" : rows,
+							"count" : count
+						});
+					});
+				}
 
+				arrow.id().seq(
+					countFn.lift()).seq(
+					selectFn.lift()).run();
+			}
+		};
 		self.routes['/api/store/:id*?'] = {
 			get : function (req, res) {
 				var query = "select * from store",
@@ -147,7 +170,7 @@ var SampleApp = function () {
 				} else if (search) {
 					offset = page ? (page * limit) : 0;
 					like = " WHERE name like ?";
-					query += like + " limit " + limit + " offset " + offset;
+					query += like + " limit "+ limit +" offset " + offset;
 					connection.query("select count(*) as c from store " + like, ['%' + search + '%'], function (err, rows) {
 						if (!err) {
 							if (rows[0]) {
@@ -192,9 +215,9 @@ var SampleApp = function () {
 				search = req.query['q'],
 				store = req.query['store'],
 				page = req.query['page'] || req.query['pq_curpage'],
-				count = req.query['pq_rpp'] || 10,
+				count = req.query['pq_rpp']  || 10,
 				param = req.params.id,
-				offset = page ? ((page - 1) * count) : 0,
+				offset = page ? ((page-1) * count) : 0,
 				countQuery,
 				searchQuery,
 				count;
@@ -214,9 +237,16 @@ var SampleApp = function () {
 						}
 					});
 				} else if (search) {
-					countQuery = "select count(*) as c from item inner join store_item on id=item_id WHERE name like ? " + (store ? " and store_id = ? " : " group by item_id");
+					if(store) {
+						countQuery = "select count(*) as c from item inner join store_item on id=item_id WHERE name like ? " + (store ? " and store_id = ? " : " group by item_id");
 
-					searchQuery = "select * from item inner join store_item on id=item_id WHERE name like ? " + (store ? " and store_id = ? " : " group by item_id") + " limit " + count + " offset " + offset;
+						searchQuery = "select * from item inner join store_item on id=item_id WHERE name like ? " + (store ? " and store_id = ? " : " group by item_id") + " limit " + count + " offset " + offset;
+					} else {
+						countQuery = "select count(*) as c from item WHERE name like ? ";
+
+						searchQuery = "select * from item WHERE name like ? " + " limit " + count + " offset " + offset;
+					
+					}
 
 					connection.query(countQuery, ['%' + search + '%', store], function (err, rows) {
 						if (!err) {
@@ -237,11 +267,13 @@ var SampleApp = function () {
 							res.json({
 								"items" : rows,
 								"page" : JSON.parse(page),
-								"prev" : JSON.parse(page) - 1,
-								"next" : JSON.parse(page) + 1,
+								"prev" : JSON.parse(page)-1,
+								"next" : JSON.parse(page)+1,
+								"query" : search,
 								"size" : rows.length,
 								"count" : (count || rows.length),
-								"store" : JSON.parse(store)
+								"store" : store || 0,
+								"query" : search
 							});
 						}
 					});
@@ -269,17 +301,19 @@ var SampleApp = function () {
 							res.json({
 								"items" : rows,
 								"page" : JSON.parse(page),
-								"prev" : JSON.parse(page) - 1,
-								"next" : JSON.parse(page) + 1,
+								"prev" : JSON.parse(page)-1,
+								"next" : JSON.parse(page)+1,
 								"size" : rows.length,
 								"count" : (count || rows.length),
-								"store" : JSON.parse(store)
+								"store" : JSON.parse(store),
+								"query" : store
 							});
 						}
 					});
 				}
 			}
 		};
+
 
 	};
 
@@ -356,10 +390,13 @@ var SampleApp = function () {
 	 *  Start the server (starts up the sample application).
 	 */
 	self.start = function () {
+		eval(fs.readFileSync('parser.js')+'');
+		eval(fs.readFileSync('arrows.js')+'');
 		//  Start the app on the specific interface (and port).
 		self.app.listen(self.port, self.ipaddress, function () {
 			console.log('%s: Node server started on %s:%d ...',
 				Date(Date.now()), self.ipaddress, self.port);
+				arrow = Arrow;
 		});
 	};
 
